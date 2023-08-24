@@ -54,7 +54,7 @@ class ImageGallery extends React.Component {
     const { gallery, loader, error, totalImages, isShowModal, modalImage } =
       this.state;
     const { searchName } = this.props;
-    const { hits, total } = this.state.gallery;
+    const { total } = this.state.gallery;
 
     return (
       <>
