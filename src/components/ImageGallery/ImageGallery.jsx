@@ -24,18 +24,24 @@ class ImageGallery extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     const prevName = prevProps.searchName;
     const nextName = this.props.searchName;
-    const page = this.props.page;
-    if (prevName !== nextName) {
-      this.setState({ loader: true, gallery: [] });
+    if (prevName !== nextName || this.state.page !== prevState.page) {
+      this.setState({ loader: true });
 
-      ImageAPI.fetchImage(nextName, page)
+      ImageAPI.fetchImage(nextName, this.state.page)
+
+        .then(result => {
+          if (result.ok) {
+            return result.json();
+          }
+          return Promise.reject(new Error(`Nothing found for ${nextName}`));
+        })
         .then(gallery => {
           this.setState(prevState => ({
             gallery: [...prevState.gallery, ...gallery.hits],
             totalImages: gallery.totalHits,
           }));
         })
-        // .then(gallery => this.setState({ gallery }))
+
         .catch(error => this.setState({ error }))
         .finally(() => this.setState({ loader: false }));
     }
@@ -59,7 +65,7 @@ class ImageGallery extends React.Component {
     return (
       <>
         {error && <p>Something went wrong</p>}
-        {total === 0 && (
+        {this.state.gallery.total === 0 ?? (
           <p className={css.NoImages}>
             No images for "{this.props.searchName}" request
           </p>
