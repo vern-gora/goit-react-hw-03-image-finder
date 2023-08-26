@@ -60,20 +60,19 @@ class ImageGallery extends React.Component {
     const { gallery, loader, error, totalImages, isShowModal, modalImage } =
       this.state;
     const { searchName } = this.props;
-    const { total } = this.state.gallery;
 
     return (
       <>
         {error && <p>Something went wrong</p>}
-        {this.state.gallery.total === 0 ?? (
+        {/* {totalImages === 0 ?? (
           <p className={css.NoImages}>
             No images for "{this.props.searchName}" request
           </p>
-        )}
+        )} */}
         {!searchName && (
           <p className={css.UserHelp}>What image do you want to find?</p>
         )}
-        {this.state.gallery.total !== 0 && (
+        {totalImages !== 0 ? (
           <ul className={css.ImageGallery}>
             {gallery &&
               gallery.map(hit => (
@@ -84,6 +83,10 @@ class ImageGallery extends React.Component {
                 />
               ))}
           </ul>
+        ) : (
+          <p className={css.NoImages}>
+            No images for "{this.props.searchName}" request
+          </p>
         )}
         {loader && <Loader />}
         {totalImages > gallery.length && !loader && (
