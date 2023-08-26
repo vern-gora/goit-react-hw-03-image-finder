@@ -1,8 +1,12 @@
 import css from 'components/Modal/Modal.module.css';
 import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 class Modal extends Component {
+  static propTypes = {
+    image: PropTypes.string.isRequired,
+    closeModal: PropTypes.func.isRequired,
+  };
   componentDidMount() {
     window.addEventListener('keydown', this.handlePressOnESC);
   }
