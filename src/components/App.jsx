@@ -6,7 +6,6 @@ import Loader from './Loader';
 import Button from './Button/Button';
 import Modal from './Modal/Modal';
 import { ToastContainer } from 'react-toastify';
-import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import css from './App.module.css';
 
@@ -18,25 +17,16 @@ class App extends Component {
     error: null,
     page: 1,
     totalImages: 0,
-    isShowModal: false,
     modalImage: '',
     notFount: false,
   };
 
-  hendleSubmit = event => {
-    event.preventDefault();
-    const query = event.target.elements.searchWord.value.trim().toLowerCase();
-    if (!query.length) {
-      toast.warn('Please, fill input search field');
-      return;
-    }
+  handleSubmit = query => {
     this.setState({
       searchName: query,
       gallery: [],
       page: 1,
     });
-
-    event.target.reset();
   };
 
   handleLoadMoreBtn = () => {
@@ -44,15 +34,14 @@ class App extends Component {
   };
 
   showModal = url => {
-    this.setState({ isShowModal: true });
     this.setState({ modalImage: url });
   };
 
   closeModal = () => {
-    this.setState({ isShowModal: false });
+    this.setState({ modalImage: '' });
   };
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(_, prevState) {
     const nextName = this.state.searchName;
     if (
       prevState.searchName !== nextName ||
@@ -94,21 +83,18 @@ class App extends Component {
       loader,
       error,
       totalImages,
-      isShowModal,
       modalImage,
       notFount,
     } = this.state;
     return (
       <>
-        <Searchbar hendleSubmit={this.hendleSubmit} />
+        <Searchbar handleSubmit={this.handleSubmit} />
         {gallery.length > 0 && (
           <ImageGallery gallery={gallery} showModal={this.showModal} />
         )}
         {error && <p>Something went wrong</p>}
         {notFount && (
-          <p className={css.NoImages}>
-            No images for "{this.state.searchName}" request
-          </p>
+          <p className={css.NoImages}>No images for "{searchName}" request</p>
         )}
         {!searchName && (
           <p className={css.UserHelp}>What image do you want to find?</p>
@@ -117,7 +103,7 @@ class App extends Component {
         {totalImages > gallery.length && !loader && !notFount && (
           <Button onClick={this.handleLoadMoreBtn} />
         )}
-        {isShowModal && (
+        {modalImage && (
           <Modal image={modalImage} closeModal={this.closeModal} />
         )}
         <ToastContainer autoClose={1000} />
